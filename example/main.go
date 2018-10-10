@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"time"
 
-	pfc "github.com/niean/goperfcounter"
+	pfc "github.com/mia0x75/goperfcounter"
 )
 
 func main() {

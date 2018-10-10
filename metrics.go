@@ -3,7 +3,7 @@ package goperfcounter
 import (
 	"time"
 
-	"github.com/rcrowley/go-metrics"
+	"github.com/mia0x75/go-metrics"
 	"github.com/niean/goperfcounter/base"
 )
 

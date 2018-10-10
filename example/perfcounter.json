@@ -1,7 +1,7 @@
 {
     "debug": true,
-    "hostname": "",
-    "tags": "cop=xiaomi,owt=inf,pdl=falcon,module=perfcounter",
+    "hostname": "127.0.0.1",
+    "tags": "",
     "step": 20,
     "bases":["runtime","debug"],
     "push": {

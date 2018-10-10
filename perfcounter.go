@@ -3,7 +3,7 @@ package goperfcounter
 import (
 	"strings"
 
-	"github.com/niean/go-metrics-lite"
+	"github.com/rcrowley/go-metrics"
 )
 
 func init() {

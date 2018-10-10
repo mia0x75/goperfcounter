@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/niean/go-metrics-lite"
+	"github.com/rcrowley/go-metrics"
 	bhttp "github.com/niean/gotools/http/httpclient/beego"
 )
 

@@ -8,7 +8,7 @@ import (
 type GlobalConfig struct {
 	Debug    bool        `json:"debug"`
 	Hostname string      `json:"hostname"`
-	Tags     string      `json:"tags"`
+	Prefix   string      `json:"prefix"`
 	Step     int64       `json:"step"`
 	Bases    []string    `json:"bases"`
 	Push     *PushConfig `json:"push"`
@@ -26,11 +26,11 @@ type PushConfig struct {
 }
 
 var (
-	defaultTags  = ""
-	defaultStep  = int64(60) //time in sec
-	defaultBases = []string{"debug", "runtime"}
-	defaultPush  = &PushConfig{Enabled: true, Api: "http://127.0.0.1:1988/v1/push"}
-	defaultHttp  = &HttpConfig{Enabled: false, Listen: ""}
+	defaultPrefix = ""
+	defaultStep   = int64(60) //time in sec
+	defaultBases  = []string{"debug", "runtime"}
+	defaultPush   = &PushConfig{Enabled: true, Api: "http://127.0.0.1:1988/v1/push"}
+	defaultHttp   = &HttpConfig{Enabled: false, Listen: ""}
 )
 
 var (
@@ -42,7 +42,7 @@ var (
 	DefaultConfig = &GlobalConfig{
 		Debug:    false,
 		Hostname: defaultHostname(),
-		Tags:     defaultTags,
+		Prefix:   defaultPrefix,
 		Step:     defaultStep,
 		Bases:    defaultBases,
 		Push:     defaultPush,

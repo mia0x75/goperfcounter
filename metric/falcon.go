@@ -68,7 +68,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 	cfg := g.Config()
 	endpoint := cfg.Hostname
 	step := cfg.Step
-	tags := cfg.Tags
+	prefix := cfg.Prefix
 	ts := time.Now().Unix()
 
 	data := make([]*MetricValue, 0)
@@ -77,7 +77,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 		case metrics.Gauge:
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    fmt.Sprintf("%s.%s", tags, name),
+				Metric:    fmt.Sprintf("%s.%s", prefix, name),
 				Value:     metric.Value(),
 				Step:      step,
 				Type:      GAUGE,
@@ -87,7 +87,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 		case metrics.GaugeFloat64:
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    fmt.Sprintf("%s.%s", tags, name),
+				Metric:    fmt.Sprintf("%s.%s", prefix, name),
 				Value:     metric.Value(),
 				Step:      step,
 				Type:      GAUGE,
@@ -97,7 +97,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 		case metrics.Counter:
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    fmt.Sprintf("%s.%s", tags, name),
+				Metric:    fmt.Sprintf("%s.%s", prefix, name),
 				Value:     metric.Count(),
 				Step:      step,
 				Type:      GAUGE,
@@ -108,7 +108,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 			m := metric.Snapshot()
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    fmt.Sprintf("%s.%s", tags, name),
+				Metric:    fmt.Sprintf("%s.%s", prefix, name),
 				Value:     m.RateStep(),
 				Step:      step,
 				Type:      GAUGE,
@@ -117,7 +117,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 			})
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    fmt.Sprintf("%s.%s", tags, name),
+				Metric:    fmt.Sprintf("%s.%s", prefix, name),
 				Value:     m.Count(),
 				Step:      step,
 				Type:      GAUGE,
@@ -139,7 +139,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 			for key, val := range values {
 				data = append(data, &MetricValue{
 					Endpoint:  endpoint,
-					Metric:    fmt.Sprintf("%s.%s", tags, name),
+					Metric:    fmt.Sprintf("%s.%s", prefix, name),
 					Value:     val,
 					Step:      step,
 					Type:      GAUGE,

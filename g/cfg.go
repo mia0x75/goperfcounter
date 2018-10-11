@@ -9,6 +9,7 @@ type GlobalConfig struct {
 	Debug    bool        `json:"debug"`
 	Hostname string      `json:"hostname"`
 	Prefix   string      `json:"prefix"`
+	Tags     string      `json:"tags"`
 	Step     int64       `json:"step"`
 	Bases    []string    `json:"bases"`
 	Push     *PushConfig `json:"push"`
@@ -27,6 +28,7 @@ type PushConfig struct {
 
 var (
 	defaultPrefix = ""
+	defaultTags   = ""
 	defaultStep   = int64(60) //time in sec
 	defaultBases  = []string{"debug", "runtime"}
 	defaultPush   = &PushConfig{Enabled: true, Api: "http://127.0.0.1:1988/v1/push"}
@@ -43,6 +45,7 @@ var (
 		Debug:    false,
 		Hostname: defaultHostname(),
 		Prefix:   defaultPrefix,
+		Tags:     defaultTags,
 		Step:     defaultStep,
 		Bases:    defaultBases,
 		Push:     defaultPush,

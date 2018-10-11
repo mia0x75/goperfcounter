@@ -69,6 +69,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 	endpoint := cfg.Hostname
 	step := cfg.Step
 	prefix := cfg.Prefix
+	tags := cfg.Tags
 	ts := time.Now().Unix()
 
 	data := make([]*MetricValue, 0)
@@ -81,7 +82,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 				Value:     metric.Value(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      "spec=value",
+				Tags:      getTags(tags, "value"),
 				Timestamp: ts,
 			})
 		case metrics.GaugeFloat64:
@@ -91,7 +92,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 				Value:     metric.Value(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      "spec=value",
+				Tags:      getTags(tags, "value"),
 				Timestamp: ts,
 			})
 		case metrics.Counter:
@@ -101,7 +102,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 				Value:     metric.Count(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      "spec=count",
+				Tags:      getTags(tags, "count"),
 				Timestamp: ts,
 			})
 		case metrics.Meter:
@@ -112,7 +113,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 				Value:     m.RateStep(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      "spec=rate",
+				Tags:      getTags(tags, "rate"),
 				Timestamp: ts,
 			})
 			data = append(data, &MetricValue{
@@ -121,7 +122,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 				Value:     m.Count(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      "spec=sum",
+				Tags:      getTags(tags, "sum"),
 				Timestamp: ts,
 			})
 		case metrics.Histogram:
@@ -143,7 +144,7 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 					Value:     val,
 					Step:      step,
 					Type:      GAUGE,
-					Tags:      fmt.Sprintf("spec=%s", key),
+					Tags:      getTags(tags, key),
 					Timestamp: ts,
 				})
 			}
@@ -151,6 +152,13 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 	})
 
 	return data
+}
+
+func getTags(tags, catalog string) string {
+	if tags == "" {
+		return fmt.Sprintf("catalog=%s", catalog)
+	}
+	return fmt.Sprintf("%s,catalog=%s", tags, catalog)
 }
 
 //

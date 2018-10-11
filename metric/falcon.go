@@ -77,51 +77,51 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 		case metrics.Gauge:
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    name,
+				Metric:    fmt.Sprintf("%s.%s", tags, name),
 				Value:     metric.Value(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      getTags("value", tags),
+				Tags:      "spec=value",
 				Timestamp: ts,
 			})
 		case metrics.GaugeFloat64:
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    name,
+				Metric:    fmt.Sprintf("%s.%s", tags, name),
 				Value:     metric.Value(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      getTags("value", tags),
+				Tags:      "spec=value",
 				Timestamp: ts,
 			})
 		case metrics.Counter:
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    name,
+				Metric:    fmt.Sprintf("%s.%s", tags, name),
 				Value:     metric.Count(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      getTags("count", tags),
+				Tags:      "spec=count",
 				Timestamp: ts,
 			})
 		case metrics.Meter:
 			m := metric.Snapshot()
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    name,
+				Metric:    fmt.Sprintf("%s.%s", tags, name),
 				Value:     m.RateStep(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      getTags("rate", tags),
+				Tags:      "spec=rate",
 				Timestamp: ts,
 			})
 			data = append(data, &MetricValue{
 				Endpoint:  endpoint,
-				Metric:    name,
+				Metric:    fmt.Sprintf("%s.%s", tags, name),
 				Value:     m.Count(),
 				Step:      step,
 				Type:      GAUGE,
-				Tags:      getTags("sum", tags),
+				Tags:      "spec=sum",
 				Timestamp: ts,
 			})
 		case metrics.Histogram:
@@ -139,11 +139,11 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 			for key, val := range values {
 				data = append(data, &MetricValue{
 					Endpoint:  endpoint,
-					Metric:    name,
+					Metric:    fmt.Sprintf("%s.%s", tags, name),
 					Value:     val,
 					Step:      step,
 					Type:      GAUGE,
-					Tags:      getTags(key, tags),
+					Tags:      fmt.Sprintf("spec=%s", key),
 					Timestamp: ts,
 				})
 			}
@@ -151,13 +151,6 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 	})
 
 	return data
-}
-
-func getTags(spec string, tags string) string {
-	if tags == "" {
-		return fmt.Sprintf("spec=%s", spec)
-	}
-	return fmt.Sprintf("%s,spec=%s", tags, spec)
 }
 
 //

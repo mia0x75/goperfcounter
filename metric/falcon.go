@@ -1,4 +1,4 @@
-package goperfcounter
+package metric
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/mia0x75/go-metrics"
+	"github.com/mia0x75/gopfc/g"
 	bhttp "github.com/niean/gotools/http/httpclient/beego"
 )
 
@@ -14,8 +15,8 @@ const (
 	GAUGE = "GAUGE"
 )
 
-func pushToFalcon() {
-	cfg := config()
+func PushToFalcon() {
+	cfg := g.Config()
 	step := cfg.Step
 	api := cfg.Push.Api
 	debug := cfg.Debug
@@ -26,7 +27,7 @@ func pushToFalcon() {
 	for _ = range time.Tick(time.Duration(step) * time.Second) {
 		selfMeter("pfc.push.cnt", 1) // statistics
 
-		fms := falconMetrics()
+		fms := FalconMetrics()
 		start := time.Now()
 		err := push(fms, api, debug)
 		selfGauge("pfc.push.ms", int64(time.Since(start)/time.Millisecond)) // statistics
@@ -42,7 +43,7 @@ func pushToFalcon() {
 	}
 }
 
-func falconMetric(types []string) []*MetricValue {
+func FalconMetric(types []string) []*MetricValue {
 	fd := []*MetricValue{}
 	for _, ty := range types {
 		if r, ok := values[ty]; ok && r != nil {
@@ -53,7 +54,7 @@ func falconMetric(types []string) []*MetricValue {
 	return fd
 }
 
-func falconMetrics() []*MetricValue {
+func FalconMetrics() []*MetricValue {
 	data := make([]*MetricValue, 0)
 	for _, r := range values {
 		nd := _falconMetric(r)
@@ -64,7 +65,7 @@ func falconMetrics() []*MetricValue {
 
 // internal
 func _falconMetric(r metrics.Registry) []*MetricValue {
-	cfg := config()
+	cfg := g.Config()
 	endpoint := cfg.Hostname
 	step := cfg.Step
 	tags := cfg.Tags
@@ -75,54 +76,54 @@ func _falconMetric(r metrics.Registry) []*MetricValue {
 		switch metric := i.(type) {
 		case metrics.Gauge:
 			data = append(data, &MetricValue{
-						Endpoint:  endpoint,
-						Metric:    name,
-						Value:     metric.Value(),
-						Step:      step,
-						Type:      GAUGE,
-						Tags:      getTags("value", tags),
-						Timestamp: ts,
-					})
+				Endpoint:  endpoint,
+				Metric:    name,
+				Value:     metric.Value(),
+				Step:      step,
+				Type:      GAUGE,
+				Tags:      getTags("value", tags),
+				Timestamp: ts,
+			})
 		case metrics.GaugeFloat64:
 			data = append(data, &MetricValue{
-						Endpoint:  endpoint,
-						Metric:    name,
-						Value:     metric.Value(),
-						Step:      step,
-						Type:      GAUGE,
-						Tags:      getTags("value", tags),
-						Timestamp: ts,
-					})
+				Endpoint:  endpoint,
+				Metric:    name,
+				Value:     metric.Value(),
+				Step:      step,
+				Type:      GAUGE,
+				Tags:      getTags("value", tags),
+				Timestamp: ts,
+			})
 		case metrics.Counter:
 			data = append(data, &MetricValue{
-						Endpoint:  endpoint,
-						Metric:    name,
-						Value:     metric.Count(),
-						Step:      step,
-						Type:      GAUGE,
-						Tags:      getTags("count", tags),
-						Timestamp: ts,
-					})
+				Endpoint:  endpoint,
+				Metric:    name,
+				Value:     metric.Count(),
+				Step:      step,
+				Type:      GAUGE,
+				Tags:      getTags("count", tags),
+				Timestamp: ts,
+			})
 		case metrics.Meter:
 			m := metric.Snapshot()
 			data = append(data, &MetricValue{
-						Endpoint:  endpoint,
-						Metric:    name,
-						Value:     m.RateStep(),
-						Step:      step,
-						Type:      GAUGE,
-						Tags:      getTags("rate", tags),
-						Timestamp: ts,
-					})
+				Endpoint:  endpoint,
+				Metric:    name,
+				Value:     m.RateStep(),
+				Step:      step,
+				Type:      GAUGE,
+				Tags:      getTags("rate", tags),
+				Timestamp: ts,
+			})
 			data = append(data, &MetricValue{
-						Endpoint:  endpoint,
-						Metric:    name,
-						Value:     m.Count(),
-						Step:      step,
-						Type:      GAUGE,
-						Tags:      getTags("sum", tags),
-						Timestamp: ts,
-					})
+				Endpoint:  endpoint,
+				Metric:    name,
+				Value:     m.Count(),
+				Step:      step,
+				Type:      GAUGE,
+				Tags:      getTags("sum", tags),
+				Timestamp: ts,
+			})
 		case metrics.Histogram:
 			m := metric.Snapshot()
 			values := make(map[string]interface{})
@@ -157,18 +158,6 @@ func getTags(spec string, tags string) string {
 		return fmt.Sprintf("spec=%s", spec)
 	}
 	return fmt.Sprintf("%s,spec=%s", tags, spec)
-}
-
-func newMetricValue(endpoint, metric string, value interface{}, step int64, t, tags string, ts int64) *MetricValue {
-	return &MetricValue{
-		Endpoint:  endpoint,
-		Metric:    metric,
-		Value:     value,
-		Step:      step,
-		Type:      t,
-		Tags:      tags,
-		Timestamp: ts,
-	}
 }
 
 //
@@ -238,4 +227,3 @@ func (this *MetricValue) String() string {
 		this.Value,
 	)
 }
-

@@ -78,7 +78,7 @@ pvRateStep := GetMeterRateStep("pageView")
 + 例子:
 
 ```go
-// pv发生次数的时间平均，单位CPS。计时范围为，goperfcounter完成初始，至当前时刻。
+// pv发生次数的时间平均，单位CPS。计时范围为，gopfc完成初始，至当前时刻。
 pvRateMean := GetMeterRateMean("pageView")
 ```
 

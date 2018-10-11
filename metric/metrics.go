@@ -1,10 +1,10 @@
-package goperfcounter
+package metric
 
 import (
 	"time"
 
 	"github.com/mia0x75/go-metrics"
-	"github.com/mia0x75/goperfcounter/base"
+	"github.com/mia0x75/gopfc/base"
 )
 
 var (
@@ -29,7 +29,7 @@ func init() {
 }
 
 //
-func rawMetric(types []string) map[string]interface{} {
+func RawMetric(types []string) map[string]interface{} {
 	data := make(map[string]interface{})
 	for _, mtype := range types {
 		if v, ok := values[mtype]; ok {
@@ -39,7 +39,7 @@ func rawMetric(types []string) map[string]interface{} {
 	return data
 }
 
-func rawMetrics() map[string]interface{} {
+func RawMetrics() map[string]interface{} {
 	data := make(map[string]interface{})
 	for key, v := range values {
 		data[key] = v.Values()
@@ -47,7 +47,7 @@ func rawMetrics() map[string]interface{} {
 	return data
 }
 
-func rawSizes() map[string]int64 {
+func RawSizes() map[string]int64 {
 	data := map[string]int64{}
 	all := int64(0)
 	for key, v := range values {
@@ -59,7 +59,7 @@ func rawSizes() map[string]int64 {
 	return data
 }
 
-func collectBase(bases []string) {
+func CollectBase(bases []string) {
 	// start base collect after 30sec
 	time.Sleep(time.Duration(30) * time.Second)
 
